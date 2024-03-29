@@ -140,11 +140,12 @@ public class BlockBreakerGoal extends Goal {
 			this.miner.level().playSound(null, pos, soundType.getHitSound(), SoundSource.BLOCKS, (soundType.getVolume() + 1.0F) / 8.0F, soundType.getPitch() * 0.5F);
 		}
 		if (this.breakingTick >= this.tickToBreak && this.miner.level() instanceof ServerLevel level) {
-			BlockEntity blockentity = this.blockState.hasBlockEntity() ? this.miner.level().getBlockEntity(pos) : null;
-			LootParams.Builder lootparams$builder = (new LootParams.Builder(level)).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos)).withParameter(LootContextParams.TOOL, this.miner.getOffhandItem()).withOptionalParameter(LootContextParams.BLOCK_ENTITY, blockentity).withOptionalParameter(LootContextParams.THIS_ENTITY, this.miner);
-			this.blockState.spawnAfterBreak(level, pos, this.miner.getOffhandItem(), true);
-			this.blockState.getDrops(lootparams$builder).forEach((itemStack) -> level.addFreshEntity(new ItemEntity(level, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f, itemStack)));
-			this.miner.level().destroyBlock(pos, false, this.miner);
+			if (ForgeEventFactory.onEntityDestroyBlock(this.miner, this.targetBlocks.get(0), this.blockState) && this.miner.level().destroyBlock(pos, false, this.miner)) {
+				BlockEntity blockentity = this.blockState.hasBlockEntity() ? this.miner.level().getBlockEntity(pos) : null;
+				LootParams.Builder lootparams$builder = (new LootParams.Builder(level)).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos)).withParameter(LootContextParams.TOOL, this.miner.getOffhandItem()).withOptionalParameter(LootContextParams.BLOCK_ENTITY, blockentity).withOptionalParameter(LootContextParams.THIS_ENTITY, this.miner);
+				this.blockState.spawnAfterBreak(level, pos, this.miner.getOffhandItem(), false);
+				this.blockState.getDrops(lootparams$builder).forEach((itemStack) -> level.addFreshEntity(new ItemEntity(level, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f, itemStack)));
+			}
 			this.miner.level().destroyBlockProgress(this.miner.getId(), pos, -1);
 			this.targetBlocks.remove(0);
 			if (!this.targetBlocks.isEmpty())
@@ -246,8 +247,6 @@ public class BlockBreakerGoal extends Goal {
 	}
 
 	private boolean canBreakBlock() {
-		if (!ForgeEventFactory.onEntityDestroyBlock(this.miner, this.targetBlocks.get(0), this.blockState))
-			return false;
 		if (!this.blockState.requiresCorrectToolForDrops() || !this.properToolRequired)
 			return true;
 

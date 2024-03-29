@@ -1,7 +1,11 @@
 # Changelog
 
 ## Upcoming
+* Miner mobs no longer drop experience from blocks broken
 * Fixed breaching creepers with ITR making huge holes when not breaching
+* Fixed miner mobs LivingDestroyBlockEvent getting called too many times
+  * It's now called only when the mob attempts to break blocks
+* Fixed miner mobs dropping the block's item even if `Level#destroyBlock` returned false
 
 ## 2.4.2
 * Lowered cooldown from skeleton shooting in Easy and Normal
