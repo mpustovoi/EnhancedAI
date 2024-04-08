@@ -10,11 +10,13 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class EACreeperSwellGoal extends Goal {
@@ -40,6 +42,9 @@ public class EACreeperSwellGoal extends Goal {
 	boolean beta = false;
 	float angle = 0;
 	boolean betaStrafeLeft;
+
+	private Vec3 lastPosition = null;
+	private int lastPositionTickstamp = 0;
 
 	public EACreeperSwellGoal(Creeper creeper) {
 		this.swellingCreeper = creeper;
@@ -175,18 +180,40 @@ public class EACreeperSwellGoal extends Goal {
 		return this;
 	}
 
-	public static boolean canBreach(Creeper creeper, LivingEntity target) {
+	public boolean canBreach(Creeper creeper, LivingEntity target) {
 		if (!creeper.getPersistentData().contains(CreeperSwell.BREACH))
 			return false;
 		double yDistance = creeper.getY() - target.getY();
 		double x = target.getX() - creeper.getX();
 		double z = target.getZ() - creeper.getZ();
 		double xzDistance = x * x + z * z;
-		return (creeper.getNavigation().isDone() || creeper.getNavigation().isStuck())
+		return this.isStuck()
 				&& !creeper.getSensing().hasLineOfSight(target)
 				&& !creeper.isInWater()
 				&& xzDistance < (CreeperUtils.getExplosionSizeSqr(creeper) * 5d * 5d)
 				&& yDistance > -CreeperUtils.getExplosionSize(creeper) - 2;
+	}
+
+	public static boolean canCreeperBreach(Creeper creeper, LivingEntity target) {
+		Set<WrappedGoal> availableGoals = creeper.goalSelector.getAvailableGoals();
+
+		return availableGoals.stream()
+				.filter(wrappedGoal -> wrappedGoal.getGoal() instanceof EACreeperSwellGoal)
+				.anyMatch(eaCreeperSwellGoal -> ((EACreeperSwellGoal) eaCreeperSwellGoal.getGoal()).canBreach(creeper, target));
+	}
+
+	/**
+	 * Returns true if the creeper has been stuck in the same spot (radius 1.5 blocks) for more than 3 seconds
+	 */
+	public boolean isStuck() {
+		if (this.swellingCreeper.getTarget() == null)
+			return false;
+
+		if (this.lastPosition == null || this.swellingCreeper.distanceToSqr(this.lastPosition) > 2.25d) {
+			this.lastPosition = this.swellingCreeper.position();
+			this.lastPositionTickstamp = this.swellingCreeper.tickCount;
+		}
+		return this.swellingCreeper.getNavigation().isDone() || this.swellingCreeper.tickCount - this.lastPositionTickstamp >= 30;
 	}
 
 	public boolean requiresUpdateEveryTick() {

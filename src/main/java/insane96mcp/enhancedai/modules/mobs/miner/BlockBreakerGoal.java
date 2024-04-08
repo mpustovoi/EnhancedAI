@@ -193,7 +193,7 @@ public class BlockBreakerGoal extends Goal {
 	}
 
 	/**
-	 * Returns true if the zombie has been stuck in the same spot (radius 1.5 blocks) for more than 3 seconds
+	 * Returns true if the miner has been stuck in the same spot (radius 1.5 blocks) for more than 3 seconds
 	 */
 	public boolean isStuck() {
 		if (this.miner.getTarget() == null)

@@ -74,7 +74,7 @@ public class CreeperSwell extends Feature {
 	@Label(name = "Launch.Explosion Radius", description = "The explosion radius of launching creepers. Set to 0 to not change. (Overrides Cena creepers explosion radius)")
 	public static Integer launchExplosionRadius = 2;
 	@Config(min = 0d, max = 1d)
-	@Label(name = "Breach Chance", description = "Breaching creepers will try to open an hole in the wall to let mobs in.")
+	@Label(name = "Breach Chance", description = "Breaching creepers will try to open a hole in the wall to let mobs in.")
 	public static Double breachChance = 0.075d;
 	@Config(min = 0d, max = 1d)
 	@Label(name = "Beta Creeper Chance", description = "Beta creepers when exploding will walk around the target, like the creepers in pre-1.2.")

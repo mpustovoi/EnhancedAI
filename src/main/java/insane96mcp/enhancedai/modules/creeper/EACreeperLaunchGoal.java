@@ -87,13 +87,13 @@ public class EACreeperLaunchGoal extends Goal {
 	public boolean canContinueToUse() {
 		if (this.launchingCreeper.swell >= fuse - 2 && this.launchingCreeper.distanceToSqr(this.creeperAttackTarget) > (explosionSizeSqr * 2d * 2d)) {
 			this.fails++;
-			if (EACreeperSwellGoal.canBreach(this.launchingCreeper, this.creeperAttackTarget))
+			if (EACreeperSwellGoal.canCreeperBreach(this.launchingCreeper, this.creeperAttackTarget))
 				this.cooldown = 60 + (this.fails * 60);
 			else
 				this.cooldown = CreeperUtils.getFuse(this.launchingCreeper);
 			return false;
 		}
-		else if ((this.launchingCreeper.verticalCollision || this.launchingCreeper.horizontalCollision) && this.hasLaunched && EACreeperSwellGoal.canBreach(this.launchingCreeper, this.creeperAttackTarget)) {
+		else if ((this.launchingCreeper.verticalCollision || this.launchingCreeper.horizontalCollision) && this.hasLaunched && EACreeperSwellGoal.canCreeperBreach(this.launchingCreeper, this.creeperAttackTarget)) {
 			this.launchingCreeper.explodeCreeper();
 			return false;
 		}
