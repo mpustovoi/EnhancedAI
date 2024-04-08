@@ -6,6 +6,7 @@
 * Fixed miner mobs LivingDestroyBlockEvent getting called too many times
   * It's now called only when the mob attempts to break blocks
 * Fixed miner mobs dropping the block's item even if `Level#destroyBlock` returned false
+* Fixed llamas attacking indefinitely
 
 ## 2.4.2
 * Lowered cooldown from skeleton shooting in Easy and Normal
