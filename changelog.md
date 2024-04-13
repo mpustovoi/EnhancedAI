@@ -1,5 +1,8 @@
 # Changelog
 
+## Upcoming
+* Fixed Breaching Creeper Explosions ignoring block hardness, making the explosion break **any** block
+
 ## 2.4.3
 * Miner mobs no longer drop experience from blocks broken
 * Fixed breaching creepers with ITR making huge holes when not breaching

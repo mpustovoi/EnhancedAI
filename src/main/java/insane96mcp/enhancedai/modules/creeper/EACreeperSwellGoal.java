@@ -84,7 +84,7 @@ public class EACreeperSwellGoal extends Goal {
 		explosionSize = CreeperUtils.getExplosionSize(this.swellingCreeper);
 		explosionSizeSqr = explosionSize * explosionSize;
 		if (CreeperSwell.iguanaTweaksIntegration) {
-			this.swellingCreeper.getPersistentData().putFloat("iguanatweaksreborn:explosion_ray_strength_multiplier", this.isBreaching ? 0 : 0.3f);
+			this.swellingCreeper.getPersistentData().putFloat("iguanatweaksreborn:explosion_ray_strength_multiplier", this.isBreaching ? 0.1f : 0.3f);
 			this.swellingCreeper.getPersistentData().putFloat("iguanatweaksreborn:explosion_base_resistance_add", this.isBreaching ? 0 : 0.3f);
 		}
 	}
